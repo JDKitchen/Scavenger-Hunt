@@ -3,25 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>RetroQuest // 8-Bit Scavenger Hunt</title>
-  <!-- Pixelated Retro Font -->
+  <title>RetroQuest 64 // GPS Scavenger Hunt</title>
+  <!-- 64-Bit Console Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
-  
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,400;0,600;0,700;1,700&family=Press+Start+2P&display=swap" rel="stylesheet">
+
   <style>
     :root {
-      --bg-color: #0b0c10;
-      --card-bg: #1f2833;
-      --border-outer: #45a29e;
-      --accent-neon: #66fcf1;
-      --accent-gold: #f9d342;
-      --accent-danger: #ff0055;
-      --accent-hot: #ff3838;
-      --accent-warm: #ff9f1a;
-      --accent-cold: #18dcff;
-      --accent-freezing: #7158e2;
-      --text-main: #e0e6ed;
+      /* 64-Bit N64 / PS1 Era Color Palette */
+      --bg-dark: #0f111a;
+      --chassis-dark: #1b1e2e;
+      --card-panel: #24293e;
+      --border-highlight: #4f5b82;
+      --border-shadow: #0a0b12;
+      
+      /* Accents */
+      --n64-gold: #ffcc00;
+      --n64-cyan: #00e5ff;
+      --n64-magenta: #e040fb;
+      --text-main: #f0f3fa;
+      --text-muted: #8e99b7;
+
+      /* Proximity Radar Scale: Red (Far) -> Green (Close) */
+      --radar-far-red: #ff3344;
+      --radar-mid-orange: #ff9100;
+      --radar-near-yellow: #ffd600;
+      --radar-target-green: #00e676;
     }
 
     * {
@@ -33,10 +41,10 @@
     }
 
     body {
-      background-color: var(--bg-color);
+      background-color: var(--bg-dark);
       color: var(--text-main);
-      font-family: 'VT323', monospace;
-      font-size: 20px;
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: 18px;
       line-height: 1.3;
       min-height: 100vh;
       display: flex;
@@ -44,37 +52,41 @@
       align-items: center;
       padding: 12px;
       background-image: 
-        radial-gradient(circle at 50% 20%, rgba(102, 252, 241, 0.08) 0%, transparent 60%),
-        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
-      background-size: 100% 100%, 100% 4px; /* Subtle scanline feel */
+        radial-gradient(circle at 50% 10%, rgba(0, 229, 255, 0.12) 0%, transparent 65%),
+        linear-gradient(180deg, #121420 0%, #0b0c14 100%);
     }
 
-    /* Pixel Border Utility */
-    .pixel-box {
-      background: var(--card-bg);
-      border: 4px solid var(--border-outer);
-      box-shadow: 
-        inset -4px -4px 0px 0px #0b0c10,
-        inset 4px 4px 0px 0px rgba(255,255,255,0.2),
-        0 6px 0px 0px #000;
-      border-radius: 4px;
+    /* 64-Bit Beveled Console Panels */
+    .n64-card {
+      background: linear-gradient(145deg, var(--card-panel) 0%, #1a1e2d 100%);
+      border-top: 3px solid var(--border-highlight);
+      border-left: 3px solid var(--border-highlight);
+      border-right: 3px solid var(--border-shadow);
+      border-bottom: 3px solid var(--border-shadow);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.6), inset 1px 1px 0px rgba(255,255,255,0.15);
+      border-radius: 8px;
       padding: 16px;
       width: 100%;
       max-width: 480px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
+      position: relative;
     }
 
-    .pixel-btn {
-      font-family: 'Press Start 2P', cursive;
-      font-size: 11px;
+    /* Chunky Polygonal Buttons */
+    .n64-btn {
+      font-family: 'Chakra Petch', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.5px;
       padding: 12px 14px;
-      color: #0b0c10;
-      background: var(--accent-neon);
-      border: 3px solid #ffffff;
-      box-shadow: 
-        inset -3px -3px 0px 0px #1f2833,
-        inset 3px 3px 0px 0px #ffffff,
-        0 4px 0px 0px #000;
+      color: #0b0d14;
+      background: linear-gradient(180deg, #38ef7d 0%, #11998e 100%);
+      border-top: 2px solid #a8ff78;
+      border-left: 2px solid #a8ff78;
+      border-right: 2px solid #084c46;
+      border-bottom: 3px solid #084c46;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+      border-radius: 6px;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
@@ -83,389 +95,451 @@
       text-transform: uppercase;
       text-decoration: none;
       width: 100%;
-      margin: 8px 0;
-      transition: transform 0.05s ease, background-color 0.1s ease;
+      margin: 6px 0;
+      transition: transform 0.05s ease, filter 0.1s ease;
     }
 
-    .pixel-btn:active {
-      transform: translateY(3px);
-      box-shadow: 0 1px 0px 0px #000;
+    .n64-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+      filter: brightness(0.9);
     }
 
-    .pixel-btn.secondary {
-      background: var(--accent-gold);
+    .n64-btn.secondary {
+      background: linear-gradient(180deg, #ffe066 0%, #f5a623 100%);
+      border-top-color: #fff3b0;
+      border-left-color: #fff3b0;
+      border-right-color: #8c5800;
+      border-bottom-color: #8c5800;
+      color: #2b1700;
     }
 
-    .pixel-btn.danger {
-      background: var(--accent-danger);
-      color: #fff;
+    .n64-btn.action {
+      background: linear-gradient(180deg, #00f2fe 0%, #4facfe 100%);
+      border-top-color: #a6f3ff;
+      border-left-color: #a6f3ff;
+      border-right-color: #0d47a1;
+      border-bottom-color: #0d47a1;
+      color: #031b38;
     }
 
-    .pixel-btn:disabled {
-      background: #555;
-      color: #888;
-      border-color: #777;
+    .n64-btn.danger {
+      background: linear-gradient(180deg, #ff5b79 0%, #d81b60 100%);
+      border-top-color: #ff99ab;
+      border-left-color: #ff99ab;
+      border-right-color: #6d072b;
+      border-bottom-color: #6d072b;
+      color: #ffffff;
+    }
+
+    .n64-btn.nav-back {
+      background: linear-gradient(180deg, #747d8c 0%, #2f3542 100%);
+      border-top-color: #ced6e0;
+      border-left-color: #ced6e0;
+      border-right-color: #1e222b;
+      border-bottom-color: #1e222b;
+      color: #ffffff;
+      width: auto;
+      padding: 6px 12px;
+      font-size: 12px;
+      margin: 0;
+    }
+
+    .n64-btn:disabled {
+      opacity: 0.4;
       cursor: not-allowed;
       transform: none;
       box-shadow: none;
     }
 
-    h1, h2, h3, .arcade-font {
-      font-family: 'Press Start 2P', cursive;
-      letter-spacing: -0.5px;
-    }
-
-    /* Top Status Bar */
-    .header-bar {
+    /* Cartridge Style Header */
+    .hud-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
       width: 100%;
       max-width: 480px;
-      padding: 8px 12px;
-      margin-bottom: 12px;
-      border-bottom: 2px dashed var(--border-outer);
+      padding: 6px 10px;
+      margin-bottom: 8px;
     }
 
-    .level-badge {
+    .console-badge {
+      font-family: 'Press Start 2P', monospace;
       font-size: 11px;
-      color: var(--accent-gold);
+      color: var(--n64-cyan);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-shadow: 0 0 8px rgba(0, 229, 255, 0.4);
     }
 
-    .admin-badge {
-      font-size: 9px;
-      background: #111;
-      padding: 4px 8px;
-      border: 1px solid var(--accent-neon);
-      color: var(--accent-neon);
+    .admin-pill {
+      font-family: 'Chakra Petch', sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      background: #141724;
+      border: 1px solid var(--border-highlight);
+      padding: 4px 10px;
+      border-radius: 20px;
+      color: var(--n64-gold);
       cursor: pointer;
     }
 
-    /* Radar Hot/Cold Meter */
-    .radar-container {
-      margin: 14px 0;
+    /* Radar Hot/Cold Meter (Red = Far, Green = Close) */
+    .radar-box {
+      background: rgba(10, 12, 19, 0.7);
+      border: 2px solid var(--border-highlight);
+      border-radius: 8px;
+      padding: 12px;
+      margin: 12px 0;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.6);
       text-align: center;
     }
 
-    .meter-label {
-      font-family: 'Press Start 2P', cursive;
-      font-size: 10px;
+    .radar-header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
       margin-bottom: 8px;
-      display: block;
     }
 
-    .radar-bar-bg {
-      height: 24px;
-      background: #000;
-      border: 2px solid #555;
-      border-radius: 4px;
+    .radar-track {
+      height: 26px;
+      background: #0d0f18;
+      border-radius: 14px;
+      border: 1px solid #333a52;
       overflow: hidden;
       position: relative;
+      box-shadow: inset 0 3px 6px rgba(0,0,0,0.8);
     }
 
-    .radar-fill {
+    .radar-bar {
       height: 100%;
-      width: 0%;
-      transition: width 0.4s ease-out, background-color 0.3s ease;
-      background-color: var(--accent-cold);
+      width: 10%;
+      transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease;
+      background-color: var(--radar-far-red);
+      box-shadow: 0 0 12px currentColor;
     }
 
-    .radar-text {
+    .radar-overlay-text {
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      top: 0; left: 0; right: 0; bottom: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 16px;
+      font-weight: 700;
+      font-size: 14px;
       color: #fff;
-      font-weight: bold;
-      text-shadow: 1px 1px 0 #000;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+      letter-spacing: 0.5px;
     }
 
-    /* Clue Display */
-    .clue-box {
-      background: #0d131a;
-      border: 2px solid var(--accent-neon);
+    /* Clue Presentation */
+    .mission-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .clue-screen {
+      background: #0c0e17;
+      border-radius: 6px;
+      border: 1px solid #343c57;
+      border-left: 4px solid var(--n64-cyan);
       padding: 14px;
-      min-height: 80px;
-      font-size: 22px;
-      color: #fff;
+      min-height: 90px;
+      font-size: 19px;
+      color: #ffffff;
       margin: 10px 0;
       white-space: pre-line;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.7);
     }
 
-    .hint-container {
-      background: rgba(249, 211, 66, 0.1);
-      border: 1px dashed var(--accent-gold);
-      padding: 10px;
-      margin-top: 10px;
-      font-size: 18px;
+    .hint-drawer {
+      background: rgba(255, 204, 0, 0.08);
+      border: 1px dashed var(--n64-gold);
+      border-radius: 6px;
+      padding: 10px 12px;
+      margin: 10px 0;
     }
 
-    /* Photo Upload Box */
-    .camera-slot {
-      margin: 12px 0;
+    /* Photo Verification Slot */
+    .photo-bay {
+      border: 2px dashed #4e597c;
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 8px;
       padding: 12px;
-      border: 2px dashed #aaa;
-      background: rgba(0,0,0,0.3);
+      margin: 12px 0;
       text-align: center;
     }
 
-    .photo-preview {
+    .photo-display {
       max-width: 100%;
-      max-height: 180px;
-      border: 2px solid var(--accent-neon);
+      max-height: 190px;
+      border-radius: 6px;
+      border: 2px solid var(--n64-target-green, #00e676);
       margin-top: 8px;
       display: none;
       object-fit: cover;
     }
 
-    /* Admin Styles */
-    .admin-input {
+    /* Admin Form Fields */
+    .admin-field {
       width: 100%;
-      background: #000;
-      border: 2px solid var(--accent-neon);
-      color: var(--accent-neon);
-      font-family: 'VT323', monospace;
-      font-size: 20px;
-      padding: 8px;
+      background: #0b0d14;
+      border: 1px solid var(--border-highlight);
+      border-radius: 4px;
+      color: #fff;
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: 16px;
+      padding: 8px 10px;
       margin-bottom: 10px;
     }
 
     .admin-textarea {
-      min-height: 70px;
+      min-height: 65px;
       resize: vertical;
     }
 
-    .admin-checkpoint-item {
-      background: #111;
-      border: 1px solid #444;
+    .checkpoint-card {
+      background: #141724;
+      border: 1px solid #2e354f;
+      border-left: 3px solid var(--n64-gold);
+      border-radius: 6px;
       padding: 10px;
       margin-bottom: 10px;
-      position: relative;
-    }
-
-    .badge-tag {
-      display: inline-block;
-      font-size: 9px;
-      font-family: 'Press Start 2P', cursive;
-      padding: 3px 6px;
-      border-radius: 2px;
-      margin-bottom: 6px;
-      background: #333;
     }
 
     .hidden {
       display: none !important;
     }
 
-    /* Celebration Overlay */
-    #celebration-screen {
-      text-align: center;
+    /* Trophy / Finish Animations */
+    .trophy-container {
+      font-size: 72px;
+      margin: 16px 0;
+      animation: floatTrophy 2s ease-in-out infinite;
     }
 
-    .trophy-anim {
-      font-size: 64px;
-      animation: bounce 1s infinite alternate;
-      margin: 20px 0;
-    }
-
-    @keyframes bounce {
-      from { transform: translateY(0); }
-      to { transform: translateY(-12px); }
+    @keyframes floatTrophy {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(3deg); }
     }
   </style>
 </head>
 <body>
 
-  <!-- Top Status Bar -->
-  <header class="header-bar">
-    <div class="level-badge" id="hud-level">LVL 1 / 3</div>
-    <div class="admin-badge" onclick="toggleAdminPanel()">⚡ ADMIN (PIN)</div>
+  <!-- Top 64-Bit Console HUD -->
+  <header class="hud-bar">
+    <div class="console-badge">
+      <span>QUEST 64</span>
+      <span style="color:var(--n64-gold); font-size:10px;" id="hud-level-counter">STG 1/3</span>
+    </div>
+    <div class="admin-pill" onclick="toggleAdminPanel()">⚙️ ADMIN (PIN)</div>
   </header>
 
-  <!-- ================= PLAYER VIEW ================= -->
-  <main id="player-view" class="pixel-box">
-    <div style="display: flex; align-items: center; justify-content: space-between;">
-      <h2 class="arcade-font" style="font-size: 13px; color: var(--accent-neon);" id="hud-title">MISSION 1</h2>
-      <span id="gps-status-dot" style="font-size: 14px;">🛰️ GPS: READY</span>
+  <!-- ================= PLAYER SCREEN ================= -->
+  <main id="player-view" class="n64-card">
+    
+    <div class="mission-header-bar">
+      <!-- Back Button for Navigating to Previous Clue -->
+      <button class="n64-btn nav-back" id="btn-back-clue" onclick="navigatePreviousClue()">
+        ◀ PREVIOUS CLUE
+      </button>
+      <span id="gps-lock-tag" style="font-size: 13px; font-weight:700; color: var(--n64-cyan);">
+        🛰️ GPS: READY
+      </span>
     </div>
 
-    <!-- Active Clue Card -->
-    <div class="clue-box" id="active-clue-text">
-      Loading quest data...
+    <h2 id="mission-heading" style="font-size: 18px; color: var(--n64-gold); margin-bottom: 4px;">MISSION #1</h2>
+
+    <!-- Clue Readout Screen -->
+    <div class="clue-screen" id="active-clue-body">
+      Initializing cartridge data...
     </div>
 
-    <!-- Radar / Hot-Cold Meter -->
-    <div class="radar-container">
-      <span class="meter-label" id="radar-proximity-label">RADAR: SEARCHING...</span>
-      <div class="radar-bar-bg">
-        <div class="radar-fill" id="radar-fill-bar"></div>
-        <div class="radar-text" id="radar-dist-text">-- METERS AWAY</div>
+    <!-- Red-to-Green Hot/Cold Proximity Radar -->
+    <div class="radar-box">
+      <div class="radar-header">
+        <span id="radar-status-label" style="color: var(--radar-far-red);">RADAR: ACQUIRING...</span>
+        <span id="radar-accuracy-text" style="color: var(--text-muted); font-size:11px;">±10m</span>
+      </div>
+      
+      <div class="radar-track">
+        <div class="radar-bar" id="radar-fill"></div>
+        <div class="radar-overlay-text" id="radar-metric-display">-- METERS AWAY</div>
       </div>
     </div>
 
-    <!-- Hint Timer Block -->
-    <div class="hint-container" id="hint-block">
-      <div style="display: flex; justify-content: space-between; align-items: center;">
-        <span id="hint-timer-display" style="color: var(--accent-gold);">⏳ Hint in 02:00</span>
-        <button class="pixel-btn secondary" style="width: auto; padding: 4px 8px; font-size: 8px; margin: 0;" onclick="forceRevealHint()">Reveal Now</button>
+    <!-- Bonus Hint Countdown Drawer -->
+    <div class="hint-drawer" id="hint-drawer">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span id="hint-clock" style="font-weight:700; color:var(--n64-gold); font-size:14px;">⏳ Hint in 01:30</span>
+        <button class="n64-btn secondary" style="width:auto; padding:3px 8px; font-size:11px; margin:0;" onclick="forceRevealHint()">Reveal Now</button>
       </div>
-      <div id="hint-text" class="hidden" style="margin-top: 6px; color: #fff;"></div>
+      <div id="hint-content" class="hidden" style="margin-top:8px; font-size:16px; color:#fff;"></div>
     </div>
 
-    <!-- Photo Verification Slot -->
-    <div class="camera-slot" id="photo-section">
-      <p style="font-size: 16px; margin-bottom: 6px;" id="photo-prompt-label">📸 REQUIRED: Take photo evidence at target!</p>
-      <input type="file" id="camera-input" accept="image/*" capture="environment" style="display:none;" onchange="handlePhotoUpload(event)">
-      <button class="pixel-btn" onclick="document.getElementById('camera-input').click()">📷 Snap Spot Photo</button>
-      <img id="photo-preview" class="photo-preview" alt="Evidence photo preview">
+    <!-- Photo Evidence Bay -->
+    <div class="photo-bay" id="photo-upload-container">
+      <p style="font-size:15px; font-weight:600; margin-bottom:6px;" id="photo-status-prompt">
+        📸 REQUIRED: Capture photo evidence at this location!
+      </p>
+      <input type="file" id="camera-file-input" accept="image/*" capture="environment" style="display:none;" onchange="handlePhotoUpload(event)">
+      <button class="n64-btn action" onclick="document.getElementById('camera-file-input').click()">
+        📷 Snap Location Photo
+      </button>
+      <img id="photo-preview-element" class="photo-display" alt="Evidence photo preview">
     </div>
 
-    <!-- Action Buttons -->
-    <button class="pixel-btn" id="btn-check-gps" onclick="triggerManualGPSCheck()">
-      📡 PING SATELLITE (CHECK GPS)
+    <!-- Satellite Ping Trigger -->
+    <button class="n64-btn" onclick="triggerManualGPSCheck()">
+      📡 PING SATELLITE (REFRESH GPS)
     </button>
-
-    <div style="font-size: 13px; color: #888; text-align: center; margin-top: 8px;" id="gps-accuracy-info">
-      Screen lock disabled • Proximity triggers within 15 meters
-    </div>
   </main>
 
-  <!-- ================= VICTORY / GAME OVER ================= -->
-  <div id="celebration-screen" class="pixel-box hidden">
-    <h1 style="color: var(--accent-gold); font-size: 18px; margin-bottom: 12px;">🏆 QUEST CLEAR! 🏆</h1>
-    <div class="trophy-anim">🎁</div>
-    <p style="font-size: 22px; color: #fff; margin-bottom: 16px;">
-      CONGRATULATIONS AGENTS!<br>YOU UNLOCKED THE FINAL SECRET!
+  <!-- ================= CELEBRATION / QUEST COMPLETE ================= -->
+  <div id="victory-screen" class="n64-card hidden" style="text-align: center;">
+    <h1 style="color: var(--n64-gold); font-size: 22px; text-transform: uppercase;">🏆 QUEST COMPLETE! 🏆</h1>
+    <div class="trophy-container">🌟</div>
+    <p style="font-size: 20px; color: #fff; margin-bottom: 12px;">
+      ALL TARGETS LOCATED!<br>YOU BEAT THE GAME!
     </p>
-    <div class="clue-box" id="final-reward-text">
-      The master treasure is waiting under the front porch bench!
+    <div class="clue-screen" style="border-left-color: var(--n64-gold);">
+      Check with the Game Master to claim your treasure reward!
     </div>
-    <button class="pixel-btn secondary" onclick="restartHunt()">🔄 PLAY AGAIN</button>
+    <button class="n64-btn secondary" onclick="restartHunt()">🔄 PLAY AGAIN (RESET)</button>
   </div>
 
   <!-- ================= ADMIN COMMAND CENTER ================= -->
-  <section id="admin-panel" class="pixel-box hidden">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
-      <h2 style="font-size: 13px; color: var(--accent-gold);">⚡ ADMIN COMMAND</h2>
-      <button class="pixel-btn danger" style="width: auto; padding: 4px 8px; font-size: 9px; margin: 0;" onclick="toggleAdminPanel()">EXIT</button>
+  <section id="admin-panel" class="n64-card hidden">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px; border-bottom: 1px solid var(--border-highlight); padding-bottom: 8px;">
+      <h2 style="font-size: 16px; color: var(--n64-gold);">⚡ ADMIN COMMAND</h2>
+      <button class="n64-btn danger" style="width:auto; padding:4px 10px; font-size:11px; margin:0;" onclick="toggleAdminPanel()">CLOSE</button>
     </div>
 
-    <!-- Couch / Simulator Mode for Testing -->
-    <div style="background: #111; padding: 10px; border: 1px solid #555; margin-bottom: 14px;">
-      <p style="font-size: 16px; color: var(--accent-neon); margin-bottom: 4px;">🎮 Couch Testing Simulator:</p>
-      <p style="font-size: 14px; color: #bbb; margin-bottom: 8px;">Trigger clues instantly without walking outside:</p>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
-        <button class="pixel-btn secondary" style="font-size: 8px; padding: 6px;" onclick="simulateDistance(8)">Force Near (8m)</button>
-        <button class="pixel-btn" style="font-size: 8px; padding: 6px;" onclick="simulateDistance(45)">Force Medium (45m)</button>
+    <!-- Quick Hunt Restart Button -->
+    <div style="background: rgba(255, 204, 0, 0.1); border: 1px solid var(--n64-gold); border-radius:6px; padding: 10px; margin-bottom: 14px;">
+      <p style="font-size:14px; color:#fff; font-weight:600; margin-bottom:6px;">🔄 Hunt Session Control:</p>
+      <button class="n64-btn secondary" onclick="adminRestartHunt()">
+        🔄 RESTART CURRENT HUNT (BACK TO LEVEL 1)
+      </button>
+    </div>
+
+    <!-- Couch Simulator Mode (1m Near and 3m Medium) -->
+    <div style="background: #10121d; border: 1px solid #333a52; border-radius:6px; padding: 10px; margin-bottom: 14px;">
+      <p style="font-size: 14px; font-weight:700; color: var(--n64-cyan); margin-bottom: 2px;">🎮 Couch Testing Simulator:</p>
+      <p style="font-size: 13px; color: #a4b0be; margin-bottom: 8px;">Test triggers without walking outside:</p>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+        <button class="n64-btn" style="font-size: 11px; padding: 8px;" onclick="simulateDistance(1)">Force Near (1m)</button>
+        <button class="n64-btn action" style="font-size: 11px; padding: 8px;" onclick="simulateDistance(3)">Force Med (3m)</button>
       </div>
     </div>
 
-    <!-- Active Hunt Editor -->
-    <h3 style="font-size: 11px; margin-bottom: 8px;">ADD / EDIT CHECKPOINTS</h3>
+    <!-- Checkpoint List -->
+    <h3 style="font-size: 13px; margin-bottom: 8px; color:var(--text-main);">HUNT CHECKPOINTS</h3>
     <div id="admin-checkpoints-list"></div>
 
-    <div style="background: #000; border: 2px dashed var(--accent-neon); padding: 12px; margin-top: 12px;">
-      <h4 style="font-size: 10px; margin-bottom: 8px; color: var(--accent-neon);">NEW CHECKPOINT</h4>
-      
-      <label style="font-size: 14px;">Clue / Riddle:</label>
-      <textarea id="adm-new-clue" class="admin-input admin-textarea" placeholder="Where the green dragons sleep (Garden hose)..."></textarea>
+    <!-- Add Checkpoint Form -->
+    <div style="background: #0f121d; border: 1px dashed var(--border-highlight); border-radius:6px; padding: 12px; margin-top: 10px;">
+      <h4 style="font-size: 12px; margin-bottom: 8px; color: var(--n64-cyan);">+ ADD NEW STAGE</h4>
 
-      <label style="font-size: 14px;">Bonus Hint (Revealed if stuck):</label>
-      <input type="text" id="adm-new-hint" class="admin-input" placeholder="Look near the brass spigot">
+      <label style="font-size: 13px; color:#ccc;">Clue / Riddle:</label>
+      <textarea id="adm-new-clue" class="admin-field admin-textarea" placeholder="Where the green dragons coil (Backyard garden hose)..."></textarea>
+
+      <label style="font-size: 13px; color:#ccc;">Bonus Hint (Auto-revealed if stuck):</label>
+      <input type="text" id="adm-new-hint" class="admin-field" placeholder="Look near the brass water faucet">
 
       <div style="display: flex; gap: 8px;">
         <div style="flex: 1;">
-          <label style="font-size: 14px;">Latitude:</label>
-          <input type="number" step="any" id="adm-new-lat" class="admin-input" placeholder="40.7128">
+          <label style="font-size: 13px; color:#ccc;">Latitude:</label>
+          <input type="number" step="any" id="adm-new-lat" class="admin-field" placeholder="40.7128">
         </div>
         <div style="flex: 1;">
-          <label style="font-size: 14px;">Longitude:</label>
-          <input type="number" step="any" id="adm-new-lng" class="admin-input" placeholder="-74.0060">
+          <label style="font-size: 13px; color:#ccc;">Longitude:</label>
+          <input type="number" step="any" id="adm-new-lng" class="admin-field" placeholder="-74.0060">
         </div>
       </div>
 
-      <button class="pixel-btn secondary" onclick="captureAdminLocation()">
-        📍 USE MY CURRENT GPS COORDINATES
+      <button class="n64-btn secondary" onclick="captureAdminLocation()">
+        📍 USE CURRENT PHONE GPS COORDS
       </button>
 
-      <button class="pixel-btn" onclick="saveNewCheckpoint()">
-        ➕ SAVE CHECKPOINT TO HUNT
+      <button class="n64-btn" onclick="saveNewCheckpoint()">
+        ➕ SAVE CHECKPOINT
       </button>
     </div>
 
-    <!-- Cloud Sync & Share Settings -->
-    <div style="margin-top: 16px;">
-      <h4 style="font-size: 10px; margin-bottom: 8px; color: var(--accent-gold);">EXPORT / SHARE HUNT CONFIG</h4>
-      <button class="pixel-btn secondary" onclick="exportHuntConfig()">📋 COPY HUNT JSON</button>
-      <button class="pixel-btn danger" onclick="resetDefaultHunt()">⚠️ RESET TO DEFAULT DEMO HUNT</button>
+    <!-- Backup / Reset -->
+    <div style="margin-top: 14px;">
+      <button class="n64-btn action" onclick="exportHuntConfig()">📋 COPY HUNT JSON</button>
+      <button class="n64-btn danger" onclick="resetDefaultHunt()">⚠️ RESTORE DEMO CHECKPOINTS</button>
     </div>
   </section>
 
   <script>
     /* =========================================================
-       8-BIT AUDIO SYNTHESIZER (No external sound files required)
+       64-BIT CONSOLE AUDIO SYNTHESIZER (Web Audio API)
        ========================================================= */
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-    function play8BitTone(freq, duration, type = 'square') {
+    function playTone(freq, duration, type = 'square', gainLevel = 0.1) {
       try {
         if (audioCtx.state === 'suspended') audioCtx.resume();
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         osc.type = type;
         osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+        gain.gain.setValueAtTime(gainLevel, audioCtx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
         osc.connect(gain);
         gain.connect(audioCtx.destination);
         osc.start();
         osc.stop(audioCtx.currentTime + duration);
       } catch (e) {
-        console.warn("Audio unlock pending interaction.");
+        console.warn("Audio waiting for user gesture.");
       }
     }
 
     function soundCoin() {
-      play8BitTone(987.77, 0.08, 'square');
-      setTimeout(() => play8BitTone(1318.51, 0.28, 'square'), 80);
+      playTone(1046.50, 0.08, 'triangle', 0.15); // C6
+      setTimeout(() => playTone(1318.51, 0.25, 'triangle', 0.15), 70); // E6
     }
 
-    function soundRadarPing() {
-      play8BitTone(600, 0.06, 'sine');
+    function soundPing() {
+      playTone(523.25, 0.05, 'sine', 0.1);
     }
 
-    function soundLevelUp() {
-      const notes = [440, 554, 659, 880];
+    function soundLevelClear() {
+      const notes = [523.25, 659.25, 783.99, 1046.50];
       notes.forEach((freq, idx) => {
-        setTimeout(() => play8BitTone(freq, 0.12, 'square'), idx * 100);
+        setTimeout(() => playTone(freq, 0.12, 'sawtooth', 0.12), idx * 90);
       });
     }
 
     function soundVictory() {
-      const melody = [523, 659, 783, 1046, 783, 1046];
-      melody.forEach((freq, idx) => {
-        setTimeout(() => play8BitTone(freq, 0.15, 'triangle'), idx * 120);
+      const victoryChords = [440, 554, 659, 880, 1108];
+      victoryChords.forEach((freq, idx) => {
+        setTimeout(() => playTone(freq, 0.2, 'triangle', 0.15), idx * 110);
       });
     }
 
     /* =========================================================
-       GAME STATE & DEFAULT SCAVENGER HUNT DATA
+       GAME CONFIGURATION & PERSISTENCE
        ========================================================= */
-    const ADMIN_PIN = "1234"; // Parents can edit this
-    const TRIGGER_RADIUS_METERS = 18; // Trigger distance threshold
+    const ADMIN_PIN = "1234";
+    const TRIGGER_RADIUS_METERS = 18; // Trigger radius threshold
 
-    // Default sample hunt (lat/lng default to standard coords, parents will override)
-    let defaultHunt = [
+    const defaultHunt = [
       {
         id: 1,
-        title: "LEVEL 1: THE WATER TEMPLE",
-        clue: "Seek where the cold dragon coils by the bricks, waiting to quench summer thirst. (Check near the backyard garden hose!)",
-        hint: "It's green, rolled up, and connected to the outdoor spigot.",
+        title: "STAGE 1: THE DRAGON SPIGOT",
+        clue: "Seek where the green serpent coils against the wall, ready to douse summer heat! (Backyard garden hose)",
+        hint: "Rolled up near the side faucet behind the garage.",
         lat: 40.712776,
         lng: -74.005974,
         hintDelaySec: 90,
@@ -473,19 +547,19 @@
       },
       {
         id: 2,
-        title: "LEVEL 2: THE SENTINEL TREE",
-        clue: "Proceed to the oldest wooden giant whose roots pierce the grass. A hidden emblem guards the hollow base.",
-        hint: "Look behind the big oak tree by the driveway fence.",
+        title: "STAGE 2: THE ANCIENT OAK",
+        clue: "Proceed toward the tallest leafy giant whose roots hold up the boundary fence. Look for the hollow fork.",
+        hint: "Near the corner tree by the driveway.",
         lat: 40.712950,
         lng: -74.006200,
-        hintDelaySec: 120,
+        hintDelaySec: 90,
         requirePhoto: true
       },
       {
         id: 3,
-        title: "BOSS STAGE: THE VAULT",
-        clue: "The final dungeon chest rests under the weathered wood where travelers rest their legs before entering the sanctuary.",
-        hint: "Check beneath the front porch sitting bench!",
+        title: "FINAL STAGE: THE TREASURE VAULT",
+        clue: "The final dungeon chest rests beneath the wooden deck where travelers pause before stepping through the master portal.",
+        hint: "Right under the front porch bench!",
         lat: 40.713100,
         lng: -74.005800,
         hintDelaySec: 60,
@@ -501,9 +575,7 @@
     let simulatedDistanceOverride = null;
     let hasPhotoEvidence = false;
 
-    /* =========================================================
-       SCREEN WAKE LOCK (Prevents phone from sleeping)
-       ========================================================= */
+    /* Screen Wake Lock */
     async function requestWakeLock() {
       if ('wakeLock' in navigator) {
         try {
@@ -514,11 +586,9 @@
       }
     }
 
-    /* =========================================================
-       HAVERSINE GPS DISTANCE CALCULATOR
-       ========================================================= */
+    /* Haversine Distance Formula (Meters) */
     function calculateDistanceMeters(lat1, lon1, lat2, lon2) {
-      const R = 6371e3; // Earth radius in meters
+      const R = 6371e3;
       const rad = Math.PI / 180;
       const dLat = (lat2 - lat1) * rad;
       const dLon = (lon2 - lon1) * rad;
@@ -530,7 +600,7 @@
     }
 
     /* =========================================================
-       INIT & UI REFRESH
+       INITIALIZATION & LEVEL RENDERING
        ========================================================= */
     function initGame() {
       requestWakeLock();
@@ -545,142 +615,153 @@
       }
 
       const level = huntData[currentLevelIndex];
-      document.getElementById('hud-level').innerText = `LVL ${currentLevelIndex + 1} / ${huntData.length}`;
-      document.getElementById('hud-title').innerText = level.title || `MISSION ${currentLevelIndex + 1}`;
-      document.getElementById('active-clue-text').innerText = level.clue;
-      
-      // Reset photo requirement
+      document.getElementById('hud-level-counter').innerText = `STG ${currentLevelIndex + 1}/${huntData.length}`;
+      document.getElementById('mission-heading').innerText = level.title || `STAGE #${currentLevelIndex + 1}`;
+      document.getElementById('active-clue-body').innerText = level.clue;
+
+      // Update Back Button Visibility: only enabled if on Level 2 or higher
+      const backBtn = document.getElementById('btn-back-clue');
+      if (currentLevelIndex > 0) {
+        backBtn.style.visibility = 'visible';
+        backBtn.disabled = false;
+      } else {
+        backBtn.style.visibility = 'hidden';
+        backBtn.disabled = true;
+      }
+
+      // Reset photo state
       hasPhotoEvidence = false;
-      const photoSection = document.getElementById('photo-section');
-      const photoPreview = document.getElementById('photo-preview');
+      const photoSection = document.getElementById('photo-upload-container');
+      const photoPreview = document.getElementById('photo-preview-element');
       photoPreview.style.display = 'none';
       photoPreview.src = '';
 
       if (level.requirePhoto) {
         photoSection.classList.remove('hidden');
-        document.getElementById('photo-prompt-label').innerText = "📸 REQUIRED: Snap spot photo to confirm!";
+        document.getElementById('photo-status-prompt').innerText = "📸 REQUIRED: Snap spot photo to confirm target!";
+        document.getElementById('photo-status-prompt').style.color = "#fff";
       } else {
         photoSection.classList.add('hidden');
       }
 
-      // Start Hint Countdown
       startHintTimer(level.hintDelaySec || 90, level.hint);
-
-      // Save progress
       localStorage.setItem('retroquest_level', currentLevelIndex.toString());
       soundCoin();
     }
 
+    /* Previous Clue Navigation */
+    function navigatePreviousClue() {
+      if (currentLevelIndex > 0) {
+        currentLevelIndex--;
+        simulatedDistanceOverride = null;
+        loadCurrentLevel();
+      }
+    }
+
     /* =========================================================
-       RADAR & GPS LOGIC
+       GPS & INVERTED RADAR LOGIC (Red = Far, Green = Close)
        ========================================================= */
     function startGPSTracking() {
       if (!('geolocation' in navigator)) {
-        document.getElementById('gps-status-dot').innerText = "❌ GPS NOT SUPPORTED";
+        document.getElementById('gps-lock-tag').innerText = "❌ GPS NOT SUPPORTED";
         return;
       }
-
-      const options = {
-        enableHighAccuracy: true,
-        maximumAge: 1000,
-        timeout: 10000
-      };
 
       watchId = navigator.geolocation.watchPosition(
         handleGPSUpdate,
         handleGPSError,
-        options
+        { enableHighAccuracy: true, maximumAge: 1000, timeout: 10000 }
       );
     }
 
     function handleGPSUpdate(position) {
-      document.getElementById('gps-status-dot').innerText = "🛰️ GPS: LOCKED";
+      document.getElementById('gps-lock-tag').innerText = "🛰️ GPS: LOCKED";
       const userLat = position.coords.latitude;
       const userLng = position.coords.longitude;
       const accuracy = Math.round(position.coords.accuracy);
 
-      document.getElementById('gps-accuracy-info').innerText = 
-        `Accuracy: ±${accuracy}m • Proximity triggers within ${TRIGGER_RADIUS_METERS}m`;
+      document.getElementById('radar-accuracy-text').innerText = `±${accuracy}m`;
 
-      const currentTarget = huntData[currentLevelIndex];
-      if (!currentTarget) return;
+      const target = huntData[currentLevelIndex];
+      if (!target) return;
 
-      let distance = calculateDistanceMeters(userLat, userLng, currentTarget.lat, currentTarget.lng);
+      let distance = calculateDistanceMeters(userLat, userLng, target.lat, target.lng);
 
-      // Simulator override for couch-testing
       if (simulatedDistanceOverride !== null) {
         distance = simulatedDistanceOverride;
       }
 
       updateRadarUI(distance);
-      checkGeofenceTrigger(distance, currentTarget);
+      checkTriggerConditions(distance, target);
     }
 
     function handleGPSError(err) {
-      console.warn("GPS Warning:", err.message);
-      document.getElementById('gps-status-dot').innerText = "⚠️ GPS SEARCHING...";
+      console.warn("GPS Notice:", err.message);
+      document.getElementById('gps-lock-tag').innerText = "⚠️ ACQUIRING SATELLITE...";
     }
 
     function triggerManualGPSCheck() {
-      soundRadarPing();
+      soundPing();
       if ('geolocation' in navigator) {
         navigator.geolocation.getCurrentPosition(handleGPSUpdate, handleGPSError, { enableHighAccuracy: true });
       }
     }
 
+    /* Red (Far) -> Amber -> Yellow -> Green (Close) */
     function updateRadarUI(distanceMeters) {
-      const fillBar = document.getElementById('radar-fill-bar');
-      const label = document.getElementById('radar-proximity-label');
-      const distText = document.getElementById('radar-dist-text');
+      const fillBar = document.getElementById('radar-fill');
+      const label = document.getElementById('radar-status-label');
+      const metricText = document.getElementById('radar-metric-display');
 
-      // Convert meters to approximate feet
       const feet = Math.round(distanceMeters * 3.28084);
-      distText.innerText = `${distanceMeters}m (${feet}ft)`;
+      metricText.innerText = `${distanceMeters}m (${feet}ft)`;
 
-      // Hot/Cold proximity levels
       if (distanceMeters <= TRIGGER_RADIUS_METERS) {
+        // CLOSE / TARGET REACHED -> Green
         fillBar.style.width = "100%";
-        fillBar.style.backgroundColor = "var(--accent-hot)";
-        label.innerText = "RADAR: 🔥 YOU'RE ON TOP OF IT!";
-        label.style.color = "var(--accent-hot)";
+        fillBar.style.backgroundColor = "var(--radar-target-green)";
+        label.innerText = "RADAR: 🎯 TARGET LOCKED (VERY CLOSE!)";
+        label.style.color = "var(--radar-target-green)";
       } else if (distanceMeters <= 35) {
+        // APPROACHING -> Yellow / Lime
         fillBar.style.width = "75%";
-        fillBar.style.backgroundColor = "var(--accent-warm)";
-        label.innerText = "RADAR: ♨️ GETTING VERY WARM!";
-        label.style.color = "var(--accent-warm)";
+        fillBar.style.backgroundColor = "var(--radar-near-yellow)";
+        label.innerText = "RADAR: 📡 APPROACHING TARGET";
+        label.style.color = "var(--radar-near-yellow)";
       } else if (distanceMeters <= 75) {
-        fillBar.style.width = "45%";
-        fillBar.style.backgroundColor = "var(--accent-cold)";
-        label.innerText = "RADAR: ❄️ LUKEWARM / COOL";
-        label.style.color = "var(--accent-cold)";
+        // MEDIUM DISTANCE -> Orange
+        fillBar.style.width = "40%";
+        fillBar.style.backgroundColor = "var(--radar-mid-orange)";
+        label.innerText = "RADAR: ⚠️ DETECTING DISTANT SIGNAL";
+        label.style.color = "var(--radar-mid-orange)";
       } else {
+        // FAR AWAY -> Red
         fillBar.style.width = "15%";
-        fillBar.style.backgroundColor = "var(--accent-freezing)";
-        label.innerText = "RADAR: 🧊 FREEZING COLD";
-        label.style.color = "var(--accent-freezing)";
+        fillBar.style.backgroundColor = "var(--radar-far-red)";
+        label.innerText = "RADAR: 🚨 FAR OUT OF RANGE (COLD)";
+        label.style.color = "var(--radar-far-red)";
       }
     }
 
-    function checkGeofenceTrigger(distanceMeters, level) {
+    function checkTriggerConditions(distanceMeters, level) {
       if (distanceMeters <= TRIGGER_RADIUS_METERS) {
-        // If photo is required and not taken yet, prompt them
         if (level.requirePhoto && !hasPhotoEvidence) {
-          document.getElementById('photo-prompt-label').innerText = "🎯 SPOT FOUND! Snap photo to unlock next level!";
-          document.getElementById('photo-prompt-label').style.color = "var(--accent-gold)";
+          const prompt = document.getElementById('photo-status-prompt');
+          prompt.innerText = "🎯 SPOT FOUND! Snap camera photo to unlock next level!";
+          prompt.style.color = "var(--n64-gold)";
           return;
         }
-
-        advanceToNextLevel();
+        advanceStage();
       }
     }
 
-    function advanceToNextLevel() {
+    function advanceStage() {
       simulatedDistanceOverride = null;
-      soundLevelUp();
+      soundLevelClear();
       currentLevelIndex++;
-      
+
       if (currentLevelIndex < huntData.length) {
-        alert("🎉 TARGET DISCOVERED! LEVEL COMPLETE!");
+        alert("🎉 TARGET ACQUIRED! ADVANCING TO NEXT MISSION!");
         loadCurrentLevel();
       } else {
         showCelebration();
@@ -695,97 +776,105 @@
       if (file) {
         const reader = new FileReader();
         reader.onload = function(e) {
-          const preview = document.getElementById('photo-preview');
+          const preview = document.getElementById('photo-preview-element');
           preview.src = e.target.result;
           preview.style.display = 'block';
           hasPhotoEvidence = true;
           soundCoin();
 
-          document.getElementById('photo-prompt-label').innerText = "✅ EVIDENCE RECORDED!";
-          document.getElementById('photo-prompt-label').style.color = "var(--accent-neon)";
+          const prompt = document.getElementById('photo-status-prompt');
+          prompt.innerText = "✅ EVIDENCE RECORDED!";
+          prompt.style.color = "var(--radar-target-green)";
 
-          // If within distance or test mode, advance
-          const currentTarget = huntData[currentLevelIndex];
-          if (currentTarget) {
-            triggerManualGPSCheck();
-          }
+          triggerManualGPSCheck();
         };
         reader.readAsDataURL(file);
       }
     }
 
     /* =========================================================
-       HINT COUNTDOWN TIMER
+       HINT TIMER DRAWER
        ========================================================= */
     function startHintTimer(seconds, hintText) {
       clearInterval(hintTimerInterval);
       hintTimeRemaining = seconds;
-      
-      const timerDisplay = document.getElementById('hint-timer-display');
-      const hintTextBox = document.getElementById('hint-text');
-      hintTextBox.classList.add('hidden');
-      hintTextBox.innerText = `💡 HINT: ${hintText}`;
 
-      function updateDisplay() {
+      const clock = document.getElementById('hint-clock');
+      const content = document.getElementById('hint-content');
+      content.classList.add('hidden');
+      content.innerText = `💡 HINT: ${hintText}`;
+
+      function refreshClock() {
         const mins = Math.floor(hintTimeRemaining / 60);
         const secs = hintTimeRemaining % 60;
-        timerDisplay.innerText = `⏳ Hint in ${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        clock.innerText = `⏳ Hint in ${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
       }
 
-      updateDisplay();
+      refreshClock();
 
       hintTimerInterval = setInterval(() => {
         hintTimeRemaining--;
         if (hintTimeRemaining <= 0) {
           clearInterval(hintTimerInterval);
-          timerDisplay.innerText = "💡 HINT UNLOCKED!";
-          hintTextBox.classList.remove('hidden');
+          clock.innerText = "💡 BONUS HINT READY!";
+          content.classList.remove('hidden');
           soundCoin();
         } else {
-          updateDisplay();
+          refreshClock();
         }
       }, 1000);
     }
 
     function forceRevealHint() {
       clearInterval(hintTimerInterval);
-      document.getElementById('hint-timer-display').innerText = "💡 HINT REVEALED!";
-      document.getElementById('hint-text').classList.remove('hidden');
+      document.getElementById('hint-clock').innerText = "💡 BONUS HINT REVEALED!";
+      document.getElementById('hint-content').classList.remove('hidden');
       soundCoin();
     }
 
     /* =========================================================
-       VICTORY SCREEN
+       RESTART & CELEBRATION
        ========================================================= */
     function showCelebration() {
       document.getElementById('player-view').classList.add('hidden');
-      document.getElementById('celebration-screen').classList.remove('hidden');
+      document.getElementById('victory-screen').classList.remove('hidden');
       soundVictory();
     }
 
     function restartHunt() {
       currentLevelIndex = 0;
+      simulatedDistanceOverride = null;
       localStorage.setItem('retroquest_level', '0');
-      document.getElementById('celebration-screen').classList.add('hidden');
+      document.getElementById('victory-screen').classList.add('hidden');
       document.getElementById('player-view').classList.remove('hidden');
       loadCurrentLevel();
     }
 
+    function adminRestartHunt() {
+      if (confirm("Restart the active hunt session back to Stage 1?")) {
+        currentLevelIndex = 0;
+        simulatedDistanceOverride = null;
+        localStorage.setItem('retroquest_level', '0');
+        alert("Hunt reset to Stage 1!");
+        toggleAdminPanel();
+      }
+    }
+
     /* =========================================================
-       ADMIN & SETTINGS PANEL
+       ADMIN COMMAND CENTER
        ========================================================= */
     function toggleAdminPanel() {
       const panel = document.getElementById('admin-panel');
       const playerView = document.getElementById('player-view');
 
       if (panel.classList.contains('hidden')) {
-        const pin = prompt("ENTER SECRET ADMIN PIN:");
+        const pin = prompt("ENTER ADMIN PIN:");
         if (pin === ADMIN_PIN) {
           panel.classList.remove('hidden');
           playerView.classList.add('hidden');
           renderAdminCheckpoints();
         } else if (pin !== null) {
-          alert("INCORRECT PIN!");
+          alert("INVALID PIN!");
         }
       } else {
         panel.classList.add('hidden');
@@ -800,13 +889,13 @@
 
       huntData.forEach((item, idx) => {
         const div = document.createElement('div');
-        div.className = 'admin-checkpoint-item';
+        div.className = 'checkpoint-card';
         div.innerHTML = `
-          <span class="badge-tag" style="background:var(--accent-neon); color:#000;">LEVEL ${idx + 1}</span>
-          <p><strong>Clue:</strong> ${item.clue}</p>
-          <p style="font-size:14px; color:#aaa;"><strong>GPS:</strong> ${item.lat.toFixed(5)}, ${item.lng.toFixed(5)}</p>
-          <p style="font-size:14px; color:var(--accent-gold);"><strong>Hint:</strong> ${item.hint}</p>
-          <button class="pixel-btn danger" style="padding:4px 8px; font-size:8px; margin-top:6px;" onclick="deleteCheckpoint(${idx})">🗑️ Delete</button>
+          <strong style="color:var(--n64-cyan); font-size:12px;">STAGE ${idx + 1}</strong>
+          <p style="margin:4px 0;">${item.clue}</p>
+          <p style="font-size:12px; color:#888;">Coords: ${item.lat.toFixed(5)}, ${item.lng.toFixed(5)}</p>
+          <p style="font-size:12px; color:var(--n64-gold);">Hint: ${item.hint}</p>
+          <button class="n64-btn danger" style="padding:4px 8px; font-size:10px; width:auto; margin-top:6px;" onclick="deleteCheckpoint(${idx})">🗑️ Delete</button>
         `;
         list.appendChild(div);
       });
@@ -818,10 +907,10 @@
           (pos) => {
             document.getElementById('adm-new-lat').value = pos.coords.latitude;
             document.getElementById('adm-new-lng').value = pos.coords.longitude;
-            alert(`Captured GPS coordinates:\nLat: ${pos.coords.latitude}\nLng: ${pos.coords.longitude}`);
             soundCoin();
+            alert(`GPS Captured!\nLat: ${pos.coords.latitude}\nLng: ${pos.coords.longitude}`);
           },
-          (err) => alert("Could not fetch location: " + err.message),
+          (err) => alert("GPS Error: " + err.message),
           { enableHighAccuracy: true }
         );
       }
@@ -834,15 +923,15 @@
       const lng = parseFloat(document.getElementById('adm-new-lng').value);
 
       if (!clue || isNaN(lat) || isNaN(lng)) {
-        alert("Please provide at least a Clue, Latitude, and Longitude.");
+        alert("Please provide at least a Clue riddle, Latitude, and Longitude.");
         return;
       }
 
       const newSpot = {
         id: Date.now(),
-        title: `LEVEL ${huntData.length + 1}`,
+        title: `STAGE ${huntData.length + 1}`,
         clue: clue,
-        hint: hint || "No hint for this mission!",
+        hint: hint || "No bonus hint recorded.",
         lat: lat,
         lng: lng,
         hintDelaySec: 90,
@@ -852,18 +941,17 @@
       huntData.push(newSpot);
       localStorage.setItem('retroquest_hunt', JSON.stringify(huntData));
       renderAdminCheckpoints();
-      
-      // Clear inputs
+
       document.getElementById('adm-new-clue').value = "";
       document.getElementById('adm-new-hint').value = "";
       document.getElementById('adm-new-lat').value = "";
       document.getElementById('adm-new-lng').value = "";
       soundCoin();
-      alert("Checkpoint saved to Hunt!");
+      alert("Checkpoint added to quest!");
     }
 
     function deleteCheckpoint(index) {
-      if (confirm(`Delete Level ${index + 1}?`)) {
+      if (confirm(`Delete Stage ${index + 1}?`)) {
         huntData.splice(index, 1);
         localStorage.setItem('retroquest_hunt', JSON.stringify(huntData));
         renderAdminCheckpoints();
@@ -871,27 +959,26 @@
     }
 
     function exportHuntConfig() {
-      const dataStr = JSON.stringify(huntData, null, 2);
-      navigator.clipboard.writeText(dataStr);
-      alert("Hunt JSON copied to clipboard! You can paste and save this into a text file or share it.");
+      navigator.clipboard.writeText(JSON.stringify(huntData, null, 2));
+      alert("Hunt JSON copied to clipboard!");
     }
 
     function resetDefaultHunt() {
-      if (confirm("Reset hunt back to original demo levels?")) {
+      if (confirm("Reset hunt to original 3 demo stages?")) {
         huntData = [...defaultHunt];
         localStorage.setItem('retroquest_hunt', JSON.stringify(huntData));
         renderAdminCheckpoints();
       }
     }
 
-    /* Couch Testing Simulator */
+    /* Couch Simulator (1m Near and 3m Medium) */
     function simulateDistance(meters) {
       simulatedDistanceOverride = meters;
       triggerManualGPSCheck();
-      alert(`Simulator set to ${meters} meters away. Switch back to player view to test!`);
+      alert(`Simulator set to ${meters}m distance! Return to game screen to observe.`);
     }
 
-    // Launch Game on load
+    // Launch
     window.addEventListener('DOMContentLoaded', initGame);
   </script>
 </body>
